@@ -79,19 +79,21 @@ if(current != NULL){
       delete this->node_root;
       this->node_root = current->rightChild; 
     }
-    else if(father->rightChild!=NULL){
+    else if(father->rightChild != NULL){
       if(father->rightChild->data == current->data){
         father->rightChild = current->rightChild;
         current->rightChild->parent = father;
         delete current;
+        current = NULL;
       }
     }
     else
     {
       if(father->leftChild != NULL){
-      father->leftChild = current->rightChild; 
-      current->rightChild->parent = father;
-      delete current;
+        father->leftChild = current->rightChild; 
+        current->rightChild->parent = father;
+        delete current;
+        current = NULL;
       } 
     }
   } 
@@ -100,7 +102,7 @@ if(current != NULL){
       delete this->node_root;
       this->node_root = current->leftChild; 
     }
-    else if(father->rightChild!=NULL){
+    else if(father->rightChild != NULL){
       if(father->rightChild->data == current->data){
       father->rightChild = current->leftChild;
       current->leftChild->parent = father;
@@ -113,6 +115,7 @@ if(current != NULL){
       father->leftChild = current->leftChild; 
       current->leftChild->parent = father;
       delete current;
+      current = NULL;
       }
     }
   }
@@ -123,13 +126,14 @@ if(current != NULL){
     }
     int newValue = temp->data;
     if(temp->rightChild !=NULL ){
-      temp->rightChild->parent = temp->parent;
       temp->parent->leftChild = temp->rightChild;
+      temp->rightChild->parent = temp->parent;
     }
     else{
       temp->parent->leftChild = NULL;
     }
     // Node* toDelete = search(newValue);
+    delete temp;
     temp=NULL;
     current->data = newValue;
   }
