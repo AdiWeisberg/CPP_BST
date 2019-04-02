@@ -124,11 +124,13 @@ if(current != NULL){
     int newValue = temp->data;
     if(temp->rightChild !=NULL ){
       temp->rightChild->parent = temp->parent;
-      temp->parent->rightChild = temp->rightChild;
+      temp->parent->leftChild = temp->rightChild;
+    }
+    else{
+      temp->parent->leftChild = NULL;
     }
     // Node* toDelete = search(newValue);
-    // temp=NULL;
-  
+    temp=NULL;
     current->data = newValue;
   }
 this->count--;
