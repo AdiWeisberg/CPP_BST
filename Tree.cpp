@@ -54,6 +54,7 @@ void Tree::insert(int value,Node *current){
     
 void Tree::remove(int value){
 Node* current = search(value, this->node_root);
+    if(current == NULL) return;
 if(current != NULL){
   Node* father = current->parent;
   //case1: leaf(no childrens)
