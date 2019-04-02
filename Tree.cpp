@@ -136,7 +136,7 @@ if(current != NULL){
     free(temp);
     current->data = newValue;
   }
-this->count--;
+count--;
 }
 else throw string(to_string(value) + " doesn't exist."); 
 }
