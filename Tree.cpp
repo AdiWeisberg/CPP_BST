@@ -53,7 +53,7 @@ void Tree::insert(int value,Node *current){
   }
     
 void Tree::remove(int value){
-Node* current = search(value, this-> node_root);
+Node* current = search(value, this->node_root);
 if(current != NULL){
   Node* father = current->parent;
   //case1: leaf(no childrens)
@@ -62,10 +62,12 @@ if(current != NULL){
       delete this->node_root;
       this->node_root=NULL;
     }
-    else if(father->rightChild->data == current->data){ //the leaf is from the right
+    else if(father->rightChild->data == current->data){
+    if(father->rightChild->data == current->data){ //the leaf is from the right
       father->rightChild = NULL;
       delete current;
     }
+  }
     else{//the leaf is from the left
       father->leftChild = NULL;
       delete current;
@@ -77,34 +79,41 @@ if(current != NULL){
       delete this->node_root;
       this->node_root = current->rightChild; 
     }
-    else if(father->rightChild->data == current->data){
-      father->rightChild = current->rightChild;
-      current->rightChild->parent = father;
-      delete current;
+    else if(father->rightChild!=NULL){
+      if(father->rightChild->data == current->data){
+        father->rightChild = current->rightChild;
+        current->rightChild->parent = father;
+        delete current;
+      }
     }
     else
     {
+      if(father->leftChild != NULL){
       father->leftChild = current->rightChild; 
       current->rightChild->parent = father;
       delete current;
-    } 
-  }
-
+      } 
+    }
+  } 
   else if(current->rightChild == NULL){ //has no right child
     if (father == NULL) { //the root
       delete this->node_root;
       this->node_root = current->leftChild; 
     }
-    else if(father->rightChild->data == current->data){
+    else if(father->rightChild!=NULL){
+      if(father->rightChild->data == current->data){
       father->rightChild = current->leftChild;
       current->leftChild->parent = father;
       delete current;
       current=NULL;
+      }
     }
     else{
+      if(father->leftChild != NULL){
       father->leftChild = current->leftChild; 
-      current->rightChild->parent = father;
+      current->leftChild->parent = father;
       delete current;
+      }
     }
   }
   else{
@@ -117,10 +126,10 @@ if(current != NULL){
       temp->rightChild->parent = temp->parent;
       temp->parent->rightChild = temp->rightChild;
     }
-    temp=NULL;
-    delete temp;
+    // Node* toDelete = search(newValue);
+    // temp=NULL;
+  
     current->data = newValue;
-
   }
 this->count--;
 }
@@ -139,8 +148,11 @@ else return contain(value,this->node_root);
 }
 
 int Tree::root(){
+if(this->node_root != NULL){
 int valueRoot = this->node_root->data;
 return valueRoot;
+}
+else throw string("doesn't exist."); 
 }
 
 int Tree::parent(int value){
