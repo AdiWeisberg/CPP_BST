@@ -59,65 +59,62 @@ if(current != NULL){
   //case1: leaf(no childrens)
   if(current->leftChild == NULL && current->rightChild == NULL){//the leaf is the root
     if(current->parent == NULL){
-      delete this->node_root;
-      this->node_root=NULL;
+      //delete this->node_root;
+      //this->node_root=NULL;
+      free(this->node_root);
     }
     else if(father->rightChild->data == current->data){
-    if(father->rightChild->data == current->data){ //the leaf is from the right
       father->rightChild = NULL;
-      delete current;
-    }
+      //delete current;
+      free(current);
   }
     else{//the leaf is from the left
       father->leftChild = NULL;
-      delete current;
+      //delete current;
+      free(current);
     }  
   }
   //case2:one child
   else if(current->leftChild == NULL){ //has no left child
     if (father == NULL) { //the root
-      delete this->node_root;
-      this->node_root = current->rightChild; 
+      this->node_root = current->rightChild;
+      //delete this->node_root; 
+      free(current);
     }
-    else if(father->rightChild != NULL){
-      if(father->rightChild->data == current->data){
+    else if(father->rightChild->data == current->data){
         father->rightChild = current->rightChild;
         current->rightChild->parent = father;
-        delete current;
-        current = NULL;
+        //delete current;
+        free(current);
       }
-    }
     else
     {
-      if(father->leftChild != NULL){
-        father->leftChild = current->rightChild; 
-        current->rightChild->parent = father;
-        delete current;
-        current = NULL;
-      } 
+      father->leftChild = current->rightChild; 
+      current->rightChild->parent = father;
+      //delete current;
+      free(current);
     }
   } 
   else if(current->rightChild == NULL){ //has no right child
     if (father == NULL) { //the root
-      delete this->node_root;
+      // delete this->node_root;
       this->node_root = current->leftChild; 
+      free(current);
     }
-    else if(father->rightChild != NULL){
-      if(father->rightChild->data == current->data){
-      father->rightChild = current->leftChild;
+    else if(father->leftChild->data == current->data){
+      father->leftChild = current->leftChild;
       current->leftChild->parent = father;
-      delete current;
-      current=NULL;
+      //delete current;
+      //current=NULL;
+      free(current);
       }
-    }
     else{
-      if(father->leftChild != NULL){
-      father->leftChild = current->leftChild; 
+      father->rightChild = current->leftChild; 
       current->leftChild->parent = father;
-      delete current;
-      current = NULL;
-      }
+      //delete current;
+      free(current);
     }
+    
   }
   else{
     Node* temp = current->rightChild;
@@ -126,15 +123,17 @@ if(current != NULL){
     }
     int newValue = temp->data;
     if(temp->rightChild !=NULL ){
-      temp->parent->leftChild = temp->rightChild;
       temp->rightChild->parent = temp->parent;
+      temp->parent->leftChild = temp->rightChild;
+
     }
     else{
       temp->parent->leftChild = NULL;
     }
     // Node* toDelete = search(newValue);
-    delete temp;
-    temp=NULL;
+    //delete temp;
+    //temp=NULL;
+    free(temp);
     current->data = newValue;
   }
 this->count--;
