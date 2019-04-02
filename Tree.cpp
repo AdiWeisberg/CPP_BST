@@ -54,66 +54,77 @@ void Tree::insert(int value,Node *current){
     
 void Tree::remove(int value){
 Node* current = search(value, this->node_root);
-    if(current == NULL) return;
+// if(current == NULL) return;
 if(current != NULL){
   Node* father = current->parent;
   //case1: leaf(no childrens)
   if(current->leftChild == NULL && current->rightChild == NULL){//the leaf is the root
     if(current->parent == NULL){
       //delete this->node_root;
-      //this->node_root=NULL;
-      free(this->node_root);
+      // this->node_root=NULL;
+      // free(this->node_root);
+      free(current);
+      this->node_root=NULL;
     }
     else if(father->rightChild->data == current->data){
       father->rightChild = NULL;
-      //delete current;
-      free(current);
+      delete current;
+      // free(current);
   }
     else{//the leaf is from the left
       father->leftChild = NULL;
-      //delete current;
-      free(current);
+      delete current;
+      // free(current);
     }  
   }
   //case2:one child
   else if(current->leftChild == NULL){ //has no left child
     if (father == NULL) { //the root
       this->node_root = current->rightChild;
-      //delete this->node_root; 
-      free(current);
+      delete this->node_root; 
+      // free(current);
     }
-    else if(father->rightChild->data == current->data){
+    else if(father->rightChild != NULL){
+        if(father->rightChild->data == current->data){
         father->rightChild = current->rightChild;
         current->rightChild->parent = father;
-        //delete current;
-        free(current);
+        delete current;
+        // free(current);
       }
+   }
     else
     {
+      if(father->leftChild != NULL){
       father->leftChild = current->rightChild; 
       current->rightChild->parent = father;
-      //delete current;
-      free(current);
+      delete current;
+      // free(current);
+      }
     }
   } 
   else if(current->rightChild == NULL){ //has no right child
     if (father == NULL) { //the root
       // delete this->node_root;
       this->node_root = current->leftChild; 
-      free(current);
+      // free(current);
+      delete current;
     }
-    else if(father->leftChild->data == current->data){
+    else if(father->rightChild != NULL) {
+    if(father->leftChild->data == current->data){
       father->leftChild = current->leftChild;
       current->leftChild->parent = father;
-      //delete current;
+      delete current;
       //current=NULL;
-      free(current);
+      // free(current);
       }
+    }
     else{
+      if(father->leftChild != NULL){
       father->rightChild = current->leftChild; 
       current->leftChild->parent = father;
-      //delete current;
-      free(current);
+      delete current;
+      // free(current);
+    }
     }
     
   }
@@ -132,18 +143,20 @@ if(current != NULL){
       temp->parent->leftChild = NULL;
     }
     // Node* toDelete = search(newValue);
-    //delete temp;
+    delete temp;
     //temp=NULL;
-    free(temp);
+    // free(temp);
     current->data = newValue;
+    cout << "hiiiii" << endl;
+    // if(current->parent == NULL) this->node_root->data = newValue;
   }
-count--;
+this->count--;
 }
 else throw string(to_string(value) + " doesn't exist."); 
 }
 
 int Tree::size(){
-return count; 
+return this->count; 
 }
 
 bool Tree::contains(int value){
@@ -247,6 +260,30 @@ void Tree::destroy(Node* head){
 
 // int main (){
 //   ariel::Tree tre;
-//   tre.
+//   tre.insert(20);
+//   tre.insert(30);
+//   tre.insert(25);
+//   tre.insert(24);
+//   tre.insert(27);
+//   tre.insert(40);
+//   tre.insert(35);
+//   tre.insert(60);
+//   tre.print();
+  
+//   cout << tre.size() << endl;
+//   cout << tre.root() << endl;
+  
+//   tre.remove(20);
+
+//   cout << tre.root() << endl;
+//   cout << tre.size() << endl;
+ 
+ 
+//   // tre.print();
+//   // tre.remove(30);
+//   // cout << tre.size() << endl;
+//   // tre.remove(25);
+//   // cout << tre.size() << endl;
+//   // tre.print();
 //   return 0;
 // }
