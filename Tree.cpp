@@ -1,7 +1,9 @@
 #include <iostream>
 #include <stdio.h>
+# include <stdexcept>
 #include "Tree.hpp"
 using namespace ariel;
+using namespace std;
 
 Tree::Tree(){
     this->node_root=NULL;
@@ -52,108 +54,175 @@ void Tree::insert(int value,Node *current){
     }
   }
     
-void Tree::remove(int value){
-Node* current = search(value, this->node_root);
-// if(current == NULL) return;
-if(current != NULL){
-  Node* father = current->parent;
-  //case1: leaf(no childrens)
-  if(current->leftChild == NULL && current->rightChild == NULL){//the leaf is the root
-    if(current->parent == NULL){
-      //delete this->node_root;
-      // this->node_root=NULL;
-      // free(this->node_root);
-      free(current);
-      this->node_root=NULL;
-    }
-    else if(father->rightChild->data == current->data){
-      father->rightChild = NULL;
-      delete current;
-      // free(current);
-  }
-    else{//the leaf is from the left
-      father->leftChild = NULL;
-      delete current;
-      // free(current);
-    }  
-  }
-  //case2:one child
-  else if(current->leftChild == NULL){ //has no left child
-    if (father == NULL) { //the root
-      this->node_root = current->rightChild;
-      delete this->node_root; 
-      // free(current);
-    }
-    else if(father->rightChild != NULL){
-        if(father->rightChild->data == current->data){
-        father->rightChild = current->rightChild;
-        current->rightChild->parent = father;
-        delete current;
-        // free(current);
-      }
-   }
-    else
-    {
-      if(father->leftChild != NULL){
-      father->leftChild = current->rightChild; 
-      current->rightChild->parent = father;
-      delete current;
-      // free(current);
-      }
-    }
-  } 
-  else if(current->rightChild == NULL){ //has no right child
-    if (father == NULL) { //the root
-      // delete this->node_root;
-      this->node_root = current->leftChild; 
-      // free(current);
-      delete current;
-    }
-    else if(father->rightChild != NULL) {
-    if(father->leftChild->data == current->data){
-      father->leftChild = current->leftChild;
-      current->leftChild->parent = father;
-      delete current;
-      //current=NULL;
-      // free(current);
-      }
-    }
-    else{
-      if(father->leftChild != NULL){
-      father->rightChild = current->leftChild; 
-      current->leftChild->parent = father;
-      delete current;
-      // free(current);
-    }
-    }
-    
-  }
-  else{
-    Node* temp = current->rightChild;
-    while(temp->leftChild != NULL){
-      temp = temp->leftChild;
-    }
-    int newValue = temp->data;
-    if(temp->rightChild !=NULL ){
-      temp->rightChild->parent = temp->parent;
-      temp->parent->leftChild = temp->rightChild;
 
-    }
-    else{
-      temp->parent->leftChild = NULL;
-    }
-    // Node* toDelete = search(newValue);
-    delete temp;
-    //temp=NULL;
-    // free(temp);
-    current->data = newValue;
-    cout << "hiiiii" << endl;
-    // if(current->parent == NULL) this->node_root->data = newValue;
-  }
-this->count--;
+void ariel::Tree::remove(int num){
+if(!contains(num)){throw std::invalid_argument("this element is not in the Tree Cannot remove him");}
+else {
+return remove(this->node_root,num);
 }
-else throw string(to_string(value) + " doesn't exist."); 
+}//end remove
+
+
+void ariel::Tree::remove(Node* &node, int num)
+{
+	if (node == nullptr)
+		return;
+
+	if (num < node->data)
+		remove(node->leftChild, num);
+	else if (num > node->data)
+		remove(node->rightChild, num);
+	else
+	{
+		// Case 1: no children (leaf node)
+		if (node->leftChild == nullptr && node->rightChild == nullptr)
+		{
+			// deallocate the memory and update root to null
+			delete node;
+			node = nullptr;
+		}
+
+		// Case 2: has two children
+		else if (node->leftChild && node->rightChild)
+		{
+			// in-order
+			Node *predecessor = FindMax(node->leftChild);
+			node->data = predecessor->data;
+
+			remove(node->leftChild, predecessor->data);
+		}
+
+		// Case 3: has only one child
+		else
+		{
+			// find child node
+			Node* child = (node->leftChild)? node->leftChild: node->rightChild;
+			Node* curr = node;
+
+			node = child;
+
+			// deallocate the memory
+			delete curr;
+			curr=nullptr;
+		}
+	}
 }
+
+//find the maximum node
+Node* ariel::Tree::FindMax(Node* nodeMaxVal)
+{
+	if (nodeMaxVal == nullptr) {
+		return nullptr;
+	}
+	while (nodeMaxVal->rightChild != nullptr)
+	{
+		nodeMaxVal = nodeMaxVal->rightChild;
+	}
+	return nodeMaxVal;
+}
+
+// void Tree::remove(int value){
+// Node* current = search(value, this->node_root);
+// // if(current == NULL) return;
+// if(current != NULL){
+//   Node* father = current->parent;
+//   //case1: leaf(no childrens)
+//   if(current->leftChild == NULL && current->rightChild == NULL){//the leaf is the root
+//     if(current->parent == NULL){
+//       //delete this->node_root;
+//       // this->node_root=NULL;
+//       // free(this->node_root);
+//       delete current;
+//       this->node_root=NULL;
+//     }
+//     else if(father->rightChild->data == current->data){
+//       father->rightChild = NULL;
+//       delete current;
+//       // free(current);
+//   }
+//     else{//the leaf is from the left
+//       father->leftChild = NULL;
+//       delete current;
+//       // free(current);
+//     }  
+//   }
+//   //case2:one child
+//   else if(current->leftChild == NULL){ //has no left child
+//     if (father == NULL) { //the root
+//       this->node_root = current->rightChild;
+//       delete this->node_root; 
+//       // free(current);
+//     }
+//     else if(father->rightChild != NULL){
+//         if(father->rightChild->data == current->data){
+//         father->rightChild = current->rightChild;
+//         current->rightChild->parent = father;
+//         delete current;
+//         // free(current);
+//       }
+//   }
+//     else
+//     {
+//       if(father->leftChild != NULL){
+//       father->leftChild = current->rightChild; 
+//       current->rightChild->parent = father;
+//       delete current;
+//       // free(current);
+//       }
+//     }
+//   } 
+//   else if(current->rightChild == NULL){ //has no right child
+//     if (father == NULL) { //the root
+//       // delete this->node_root;
+//       this->node_root = current->leftChild; 
+//       // free(current);
+//       delete current;
+//     }
+//     else if(father->rightChild != NULL) {
+//     if(father->leftChild->data == current->data){
+//       father->leftChild = current->leftChild;
+//       current->leftChild->parent = father;
+//       delete current;
+//       //current=NULL;
+//       // free(current);
+//       }
+//     }
+//     else{
+//       if(father->leftChild != NULL){
+//       father->rightChild = current->leftChild; 
+//       current->leftChild->parent = father;
+//       delete current;
+//       // free(current);
+//     }
+//     }
+    
+//   }
+//   else{
+//     Node* temp = current->rightChild;
+//     while(temp->leftChild != NULL){
+//       temp = temp->leftChild;
+//     }
+//     int newValue = temp->data;
+//     if(temp->rightChild !=NULL ){
+//       temp->rightChild->parent = temp->parent;
+//       temp->parent->leftChild = temp->rightChild;
+
+//     }
+//     else{
+//       temp->parent->leftChild = NULL;
+//     }
+//     // Node* toDelete = search(newValue);
+//     delete temp;
+//     //temp=NULL;
+//     // free(temp);
+//     current->data = newValue;
+//     cout << "hiiiii" << endl;
+//     // if(current->parent == NULL) this->node_root->data = newValue;
+//   }
+// this->count--;
+// }
+// else throw string(to_string(value) + " doesn't exist."); 
+// }
 
 int Tree::size(){
 return this->count; 
