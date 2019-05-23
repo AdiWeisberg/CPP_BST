@@ -1,5 +1,6 @@
 using namespace std;
 
+namespace ariel{
         struct Node{
             public:
             int data;
@@ -14,7 +15,7 @@ using namespace std;
             }
         };
 
-        namespace ariel{
+        
 
         class Tree {
         public:
@@ -41,6 +42,10 @@ using namespace std;
 	        bool contain(int value,Node *current);
             void inorder(Node *root);
             void destroy(Node* Tree);
+            Node* FindMax(Node* nodeMaxVal);
+            void remove(Node* &node, int num);
+
+
     
         };
     }
